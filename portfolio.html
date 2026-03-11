@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keerthana Saiprasad — AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #060810;
+  --surface: #0d1117;
+  --surface2: #131a24;
+  --teal: #00e5cc;
+  --amber: #f5a623;
+  --pink: #e040fb;
+  --text: #e8eaf0;
+  --muted: #5a6478;
+  --border: #1c2333;
+  --glow: rgba(0,229,204,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: auto; }
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--teal); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .15s, height .15s, background .2s;
+  box-shadow: 0 0 12px var(--teal);
+}
+#cursor-ring {
+  position: fixed; width: 32px; height: 32px;
+  border: 1px solid rgba(0,229,204,.45); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: all .22s ease;
+}
+body:hover #cursor { opacity: 1; }
+
+/* ── NEURAL CANVAS ── */
+#neural-bg {
+  position: fixed; inset: 0;
+  z-index: 0; pointer-events: none;
+  opacity: .35;
+}
+
+/* ── SCROLL PROGRESS ── */
+#progress-bar {
+  position: fixed; left: 0; top: 0;
+  width: 2px; background: var(--teal);
+  height: 0%; z-index: 500;
+  box-shadow: 0 0 8px var(--teal);
+  transition: height .08s linear;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 56px;
+  background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px;
+  letter-spacing: -.02em; color: var(--text); text-decoration: none;
+}
+.nav-logo span { color: var(--teal); }
+nav ul { display: flex; gap: 36px; list-style: none; }
+nav ul a {
+  font-size: 10px; color: var(--muted); text-decoration: none;
+  letter-spacing: .15em; text-transform: uppercase;
+  transition: color .2s;
+}
+nav ul a:hover { color: var(--teal); }
+
+/* ── SECTIONS ── */
+section { position: relative; z-index: 1; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 0 56px; position: relative; overflow: hidden;
+}
+.hero-tag {
+  font-size: 10px; letter-spacing: .2em; color: var(--teal);
+  text-transform: uppercase; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-tag::before {
+  content: ''; display: block; width: 32px; height: 1px; background: var(--teal);
+}
+.hero-name {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(52px, 7vw, 96px); line-height: .95;
+  letter-spacing: -.04em; margin-bottom: 12px;
+}
+.hero-name .line2 { color: var(--teal); display: block; }
+.hero-role {
+  font-size: 13px; color: var(--muted); letter-spacing: .05em;
+  margin-bottom: 40px; line-height: 1.6;
+}
+.hero-role strong { color: var(--amber); font-weight: 400; }
+.hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: .1em; text-decoration: none;
+  border-radius: 4px; transition: all .22s; cursor: pointer; border: none;
+}
+.btn-primary {
+  background: var(--teal); color: var(--bg); font-weight: 400;
+}
+.btn-primary:hover { box-shadow: 0 0 24px rgba(0,229,204,.5); transform: translateY(-2px); }
+.btn-outline {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+
+.hero-stats {
+  position: absolute; right: 56px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 32px;
+}
+.stat { text-align: right; }
+.stat-num {
+  font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800;
+  color: var(--text); line-height: 1;
+  background: linear-gradient(135deg, var(--teal), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 9px; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; margin-top: 4px; }
+
+/* ── SECTION HEADERS ── */
+.section-header { padding: 100px 56px 60px; }
+.section-tag {
+  font-size: 9px; letter-spacing: .25em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-tag::before { content: ''; display: block; width: 24px; height: 1px; background: var(--teal); }
+.section-title {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(36px, 5vw, 60px); letter-spacing: -.03em;
+  line-height: 1;
+}
+.section-title em { color: var(--teal); font-style: normal; }
+
+/* ── EXPERIENCE ── */
+#experience { padding-bottom: 100px; }
+.exp-grid { padding: 0 56px; display: flex; flex-direction: column; gap: 2px; }
+.exp-item {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 36px 40px; position: relative; overflow: hidden;
+  transition: border-color .25s;
+}
+.exp-item::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--teal); transform: scaleY(0);
+  transform-origin: bottom; transition: transform .3s ease;
+}
+.exp-item:hover { border-color: rgba(0,229,204,.3); }
+.exp-item:hover::before { transform: scaleY(1); }
+.exp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.exp-role { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; }
+.exp-meta { text-align: right; }
+.exp-company { font-size: 12px; color: var(--amber); letter-spacing: .05em; }
+.exp-period { font-size: 10px; color: var(--muted); letter-spacing: .1em; margin-top: 4px; }
+.exp-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tag {
+  font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid var(--border);
+  border-radius: 2px; color: var(--muted);
+}
+.tag.highlight { border-color: rgba(0,229,204,.3); color: var(--teal); }
+.exp-bullets { list-style: none; }
+.exp-bullets li {
+  font-size: 12px; color: var(--muted); line-height: 1.7;
+  padding: 4px 0 4px 18px; position: relative;
+}
+.exp-bullets li::before {
+  content: '›'; position: absolute; left: 0; color: var(--teal);
+}
+
+/* ── PROJECTS ── */
+#projects { padding-bottom: 100px; }
+.projects-grid { padding: 0 56px; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2px; }
+.project-card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 36px; position: relative; overflow: hidden;
+  transition: all .25s;
+}
+.project-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at top left, rgba(0,229,204,.04), transparent 70%);
+  opacity: 0; transition: opacity .3s;
+}
+.project-card:hover { border-color: rgba(0,229,204,.3); transform: translateY(-3px); }
+.project-card:hover::after { opacity: 1; }
+.project-num {
+  font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800;
+  color: var(--border); line-height: 1; margin-bottom: 20px;
+  transition: color .25s;
+}
+.project-card:hover .project-num { color: rgba(0,229,204,.15); }
+.project-title {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
+  margin-bottom: 8px; line-height: 1.2;
+}
+.project-date { font-size: 10px; color: var(--muted); letter-spacing: .12em; margin-bottom: 14px; }
+.project-desc { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+.project-outcome {
+  font-size: 11px; color: var(--teal);
+  border-top: 1px solid var(--border); padding-top: 14px;
+  line-height: 1.5;
+}
+.project-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.stack-tag {
+  font-size: 9px; letter-spacing: .08em; padding: 3px 8px;
+  background: rgba(0,229,204,.07); color: var(--teal);
+  border-radius: 2px;
+}
+
+/* ── SKILLS ── */
+#skills { padding-bottom: 100px; }
+.skills-container { padding: 0 56px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px; }
+.skill-group {
+  background: var(--surface); border: 1px solid var(--border); padding: 32px;
+}
+.skill-group-title {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 20px;
+}
+.skill-list { display: flex; flex-direction: column; gap: 12px; }
+.skill-row { display: flex; justify-content: space-between; align-items: center; }
+.skill-name { font-size: 12px; color: var(--text); }
+.skill-bar-wrap { width: 100px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.skill-bar {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--amber));
+  width: 0; transition: width 1.2s ease;
+}
+
+/* ── PUBLICATION ── */
+#publication { padding-bottom: 100px; }
+.pub-card {
+  margin: 0 56px;
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 48px; position: relative; overflow: hidden;
+}
+.pub-card::before {
+  content: '"'; font-family: 'Syne', sans-serif; font-size: 180px;
+  position: absolute; right: 40px; top: -20px; color: var(--border);
+  line-height: 1; pointer-events: none;
+}
+.pub-label {
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.pub-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--teal); }
+.pub-title {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: clamp(18px, 2.5vw, 28px); line-height: 1.3;
+  max-width: 720px; margin-bottom: 16px;
+}
+.pub-venue { font-size: 11px; color: var(--amber); margin-bottom: 24px; }
+.pub-desc { font-size: 12px; color: var(--muted); line-height: 1.8; max-width: 660px; }
+
+/* ── ACHIEVEMENTS ── */
+#achievements { padding-bottom: 100px; }
+.ach-grid { padding: 0 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.ach-item {
+  background: var(--surface); border: 1px solid var(--border); padding: 32px;
+  display: flex; gap: 20px; align-items: flex-start;
+  transition: border-color .2s;
+}
+.ach-item:hover { border-color: rgba(245,166,35,.3); }
+.ach-icon {
+  width: 36px; height: 36px; background: rgba(245,166,35,.1);
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.ach-text h4 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.ach-text p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+/* ── CONTACT ── */
+#contact {
+  min-height: 70vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 100px 56px; text-align: center; position: relative;
+}
+.contact-eyebrow {
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 20px;
+}
+.contact-heading {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(40px, 6vw, 80px); letter-spacing: -.03em;
+  line-height: .95; margin-bottom: 40px;
+}
+.contact-heading span { color: var(--teal); }
+.contact-links { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.contact-link {
+  padding: 12px 24px; border: 1px solid var(--border);
+  font-size: 11px; letter-spacing: .1em; color: var(--muted);
+  text-decoration: none; border-radius: 4px;
+  transition: all .2s; display: flex; align-items: center; gap: 8px;
+}
+.contact-link:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── GESTURE PANEL ── */
+#gesture-panel {
+  position: fixed; bottom: 24px; right: 24px; z-index: 300;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+}
+#cam-wrapper {
+  width: 200px; height: 150px; border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; background: #000;
+  display: none; position: relative;
+}
+#cam-wrapper.visible { display: block; }
+#cam-video { width: 100%; height: 100%; object-fit: cover; }
+#cam-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transform: scaleX(-1);
+}
+#gesture-hint {
+  position: absolute; bottom: 8px; left: 0; right: 0;
+  text-align: center; font-size: 9px; color: var(--teal);
+  letter-spacing: .08em; background: rgba(6,8,16,.7);
+  padding: 4px 0;
+}
+#gesture-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 10px 18px; border-radius: 6px; cursor: none;
+  display: flex; align-items: center; gap: 8px; letter-spacing: .08em;
+  transition: border-color .2s, background .2s;
+}
+#gesture-btn:hover { border-color: var(--teal); background: var(--surface2); }
+#gesture-btn.active { border-color: var(--teal); color: var(--teal); }
+#gesture-btn .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background .2s;
+}
+#gesture-btn.active .dot { background: var(--teal); box-shadow: 0 0 6px var(--teal); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+#gesture-status {
+  font-size: 10px; color: var(--muted); letter-spacing: .08em; text-align: right;
+  display: none; line-height: 1.6;
+}
+#gesture-status.visible { display: block; }
+#gesture-status .state { color: var(--teal); }
+
+/* ── REVEAL ANIMATION ── */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border); padding: 28px 56px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 10px; color: var(--muted); letter-spacing: .08em;
+  position: relative; z-index: 1;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+
+/* ── GLITCH ── */
+@keyframes glitch {
+  0%,100% { clip-path: none; transform: none; }
+  20% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translateX(-3px); }
+  40% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); transform: translateX(3px); }
+  60% { clip-path: none; transform: none; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  #hero, .section-header { padding-left: 24px; padding-right: 24px; }
+  .hero-stats { position: static; transform: none; flex-direction: row; flex-wrap: wrap; margin-top: 40px; }
+  .stat { text-align: left; }
+  .exp-grid, .projects-grid, .skills-container, .ach-grid, .pub-card { padding-left: 24px; padding-right: 24px; margin-left: 0; margin-right: 0; }
+  .ach-grid { grid-template-columns: 1fr; }
+  #gesture-panel { bottom: 12px; right: 12px; }
+  #cam-wrapper { width: 140px; height: 105px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Neural net background -->
+<canvas id="neural-bg"></canvas>
+
+<!-- Scroll progress -->
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">KS<span>.</span></a>
+  <ul>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div>
+    <div class="hero-tag">AI Engineer &amp; Researcher</div>
+    <h1 class="hero-name">
+      Keerthana<br>
+      <span class="line2">Saiprasad</span>
+    </h1>
+    <p class="hero-role">
+      Building intelligent systems at the intersection of<br>
+      <strong>Generative AI · RAG · Multi-Agent Systems · NLP</strong>
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">2+</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4+</div>
+      <div class="stat-label">Projects Shipped</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1</div>
+      <div class="stat-label">IEEE Publication</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <div class="section-tag">Work History</div>
+    <h2 class="section-title">Experi<em>ence</em></h2>
+  </div>
+  <div class="exp-grid">
+
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">Full-Stack AI Engineer</div>
+          <div class="exp-tags">
+            <span class="tag highlight">Current Role</span>
+            <span class="tag">Agentic AI</span>
+            <span class="tag">RAG</span>
+            <span class="tag">Knowledge Graphs</span>
+          </div>
+        </div>
+        <div class="exp-meta">
+          <div class="exp-company">Narwal</div>
+          <div class="exp-period">Aug 2025 — Present · Remote</div>
+        </div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Designed agentic AI systems for SDLC automation — RAG-based knowledge assistant, requirement-to-user-story transformation, and CI/CD validation workflows.</li>
+        <li>Integrated natural-language analytics over Knowledge Graphs and relational databases with query planning, self-query metadata routing, and multi-query decomposition.</li>
+        <li>Built Pre-Sales Research Accelerator: tool-augmented AI assistant for market research, competitor analysis, and use-case discovery.</li>
+        <li>Co-hosted "Accelerating SDLC with AI" webinar publicly showcasing practical agentic AI applications across the software development lifecycle.</li>
+      </ul>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">AI Engineer</div>
+          <div class="exp-tags">
+            <span class="tag">LLMs</span>
+            <span class="tag">Multi-Agent</span>
+            <span class="tag">Azure ML</span>
+            <span class="tag">LangChain</span>
+          </div>
+        </div>
+        <div class="exp-meta">
+          <div class="exp-company">Intellect Design Arena</div>
+          <div class="exp-period">Jun 2023 — Aug 2025 · Chennai</div>
+        </div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Fine-tuned GPT models on domain-specific data via Azure ML, improving accuracy for intelligent document extraction.</li>
+        <li>Built RAG-based agents with LangChain + ReAct using few-shot and chain-of-thought prompting for document analysis workflows.</li>
+        <li>Developed LLM-as-a-judge framework for hallucination detection and automated MLQA evaluation pipelines.</li>
+        <li>Contributed to document clustering using transformer-based embeddings and clustering algorithms to visualize document-type distribution and support data readiness assessments prior to model training.</li>
+        <li>Built a Log Analytics tool leveraging Kibana logs, trace analysis, and performance metrics to enhance real-time observability of GenAI agents — enabling proactive issue detection and actionable operational insights.</li>
+        <li>Engineered multi-agent systems for document-intensive tasks, automating structured output generation at scale.</li>
+        <li>Designed hybrid OCR + image preprocessing pipeline improving downstream extraction accuracy by <strong style="color:var(--teal)">25%</strong>.</li>
+
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <div class="section-tag">Selected Work</div>
+    <h2 class="section-title">Pro<em>jects</em></h2>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal" onclick="window.open('https://github.com/KeerthanaSaiprasad/Agentic-AI-Hackathon-Swarm-crafters','_blank')" style="cursor:pointer">
+      <div class="project-num">01</div>
+      <div class="project-title">Project Raseed — Agentic AI Financial Concierge</div>
+      <div class="project-date">July 2025 · Google Cloud Hackathon Finalist</div>
+      <div class="project-desc">Multi-agent swarm architecture for Receipt Management in Google Wallet. Specialized agents for real-time financial reasoning, consensus recommendations, and proactive spending interventions.</div>
+      <div class="project-outcome">🏆 Finalist — Google Cloud Agentic AI Day 2025</div>
+      <div class="project-stack">
+        <span class="stack-tag">LangGraph Swarm</span>
+        <span class="stack-tag">Gemini AI</span>
+        <span class="stack-tag">RAG</span>
+        <span class="stack-tag">Symbolic AI</span>
+        <span class="stack-tag">Vertex AI</span>
+        <span class="stack-tag">Firebase</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal" onclick="window.open('https://github.com/KeerthanaSaiprasad/Small-Object-Detection','_blank')" style="cursor:pointer">
+      <div class="project-num">02</div>
+      <div class="project-title">Small Object Detection for Floating Plastic Waste</div>
+      <div class="project-date">March 2023 · Computer Vision</div>
+      <div class="project-desc">Real-time detection system for floating bottles and plastic debris on inland water surfaces. Fine-tuned YOLOv5 on FloW-IMG dataset, significantly outperforming prior Cascade R-CNN baseline.</div>
+      <div class="project-outcome">mAP ~0.83 vs baseline 0.434 — 2× improvement</div>
+      <div class="project-stack">
+        <span class="stack-tag">Python</span>
+        <span class="stack-tag">YOLOv5</span>
+        <span class="stack-tag">Computer Vision</span>
+        <span class="stack-tag">Ultralytics</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal" onclick="window.open('https://github.com/KeerthanaSaiprasad/Image-Captioning','_blank')" style="cursor:pointer">
+      <div class="project-num">03</div>
+      <div class="project-title">Neural Image Captioning for Visual Accessibility</div>
+      <div class="project-date">May 2022 · Deep Learning</div>
+      <div class="project-desc">End-to-end encoder-decoder model generating descriptive captions for visually impaired users. VGG16 encodes images; LSTM decodes to natural language captions trained on Flickr8k.</div>
+      <div class="project-outcome">BLEU-1: 0.56 · BLEU-2: 0.34 on Flickr8k</div>
+      <div class="project-stack">
+        <span class="stack-tag">TensorFlow</span>
+        <span class="stack-tag">Keras</span>
+        <span class="stack-tag">VGG16</span>
+        <span class="stack-tag">LSTM</span>
+        <span class="stack-tag">NLTK</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal" onclick="window.open('https://github.com/KeerthanaSaiprasad/Tamil-Speech-Recognition','_blank')" style="cursor:pointer">
+      <div class="project-num">04</div>
+      <div class="project-title">Tamil ASR — XLSR Wav2Vec2.0 & CTC</div>
+      <div class="project-date">Oct 2022 · NLP / Speech</div>
+      <div class="project-desc">Automatic Speech Recognition for low-resource Tamil via cross-lingual transfer learning. Fine-tuned Facebook AI's pretrained XLSR model with CTC loss on Common Voice Tamil dataset.</div>
+      <div class="project-outcome">WER: 58% · CER: 11% — Published at IEEE ICCCNT 2022</div>
+      <div class="project-stack">
+        <span class="stack-tag">PyTorch</span>
+        <span class="stack-tag">Hugging Face</span>
+        <span class="stack-tag">Wav2Vec2</span>
+        <span class="stack-tag">CTC</span>
+        <span class="stack-tag">NLP</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PUBLICATION -->
+<section id="publication">
+  <div class="section-header reveal">
+    <div class="section-tag">Research</div>
+    <h2 class="section-title">Publi<em>cation</em></h2>
+  </div>
+  <div class="pub-card reveal" onclick="window.open('https://ieeexplore.ieee.org/document/9984422','_blank')" style="cursor:pointer">
+    <div class="pub-label">IEEE · ICCCNT 2022</div>
+    <div class="pub-title">Tamil Speech Recognition Using XLSR Wav2Vec2.0 &amp; CTC Algorithm</div>
+    <div class="pub-venue">Proceedings of the 13th International Conference on Computing Communication &amp; Networking Technologies (ICCCNT 2022), IEEE, October 2022 — IEEE Xplore</div>
+    <div class="pub-desc">Presented research on cross-lingual transfer learning for low-resource Tamil ASR, demonstrating effective adaptation of large multilingual speech models to an underrepresented language through fine-tuning and CTC-based decoding. Contributed to broadening NLP accessibility for speakers of low-resource South Asian languages.</div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <div class="section-tag">Capabilities</div>
+    <h2 class="section-title">Tech <em>Stack</em></h2>
+  </div>
+  <div class="skills-container">
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Generative AI</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">RAG / LangChain</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="92"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Multi-Agent Systems</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Prompt Engineering</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90"></div></div></div>
+        <div class="skill-row"><span class="skill-name">LangGraph</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82"></div></div></div>
+        <div class="skill-row"><span class="skill-name">LLM Evaluation</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">ML / DL</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">PyTorch</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Hugging Face</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Computer Vision</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80"></div></div></div>
+        <div class="skill-row"><span class="skill-name">NLP / Speech</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="84"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Scikit-learn</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Infrastructure</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">Azure ML</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Docker</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="76"></div></div></div>
+        <div class="skill-row"><span class="skill-name">FastAPI</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82"></div></div></div>
+        <div class="skill-row"><span class="skill-name">MongoDB / Neo4j</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="78"></div></div></div>
+        <div class="skill-row"><span class="skill-name">Snowflake</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="72"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Languages</div>
+      <div class="skill-list">
+        <div class="skill-row"><span class="skill-name">Python</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="95"></div></div></div>
+        <div class="skill-row"><span class="skill-name">SQL</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82"></div></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-header reveal">
+    <div class="section-tag">Recognition</div>
+    <h2 class="section-title">Achieve<em>ments</em></h2>
+  </div>
+  <div class="ach-grid">
+    <div class="ach-item reveal">
+      <div class="ach-icon">🏆</div>
+      <div class="ach-text">
+        <h4>Google Cloud Hackathon Finalist</h4>
+        <p>Recognized as finalist at Google Cloud Agentic AI Day 2025 for Project Raseed — architecting a multi-agent financial concierge powered by LangGraph Swarm and Gemini AI.</p>
+      </div>
+    </div>
+    <div class="ach-item reveal">
+      <div class="ach-icon">⚡</div>
+      <div class="ach-text">
+        <h4>Intellect AI Spot Award</h4>
+        <p>Awarded for delivering a Generative AI Proof-of-Concept with 95% accuracy and stable production performance, demonstrating reliable LLM application engineering.</p>
+      </div>
+    </div>
+    <div class="ach-item reveal">
+      <div class="ach-icon">📖</div>
+      <div class="ach-text">
+        <h4>Spotlight Learning Award</h4>
+        <p>Recognized for research contributions to Governance, including development of a Log Analytics tool that improved operational observability and team workflows.</p>
+      </div>
+    </div>
+    <div class="ach-item reveal">
+      <div class="ach-icon">📄</div>
+      <div class="ach-text">
+        <h4>IEEE Publication — ICCCNT 2022</h4>
+        <p>Published and presented peer-reviewed research on cross-lingual transfer learning for low-resource Tamil ASR at the 13th International Conference on CCNT, IEEE Xplore.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-eyebrow reveal">Let's Build Something</div>
+  <h2 class="contact-heading reveal">Open to <span>Opportunities</span></h2>
+  <div class="contact-links reveal">
+    <a href="mailto:keerthanasaiprasad25@gmail.com" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      keerthanasaiprasad25@gmail.com
+    </a>
+    <a href="tel:+916362482172" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54A16 16 0 0 0 15.46 16.1l.96-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      +91 63624 82172
+    </a>
+    <a href="https://linkedin.com/in/KeerthanaS" target="_blank" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://github.com/KeerthanaSaiprasad" target="_blank" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      GitHub
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Keerthana Saiprasad</span>
+  <span style="color:var(--teal)">AI Engineer · Bengaluru, India</span>
+</footer>
+
+<!-- GESTURE PANEL -->
+<div id="gesture-panel">
+  <div id="cam-wrapper">
+    <video id="cam-video" autoplay playsinline muted></video>
+    <canvas id="cam-canvas"></canvas>
+    <div id="gesture-hint">✋ Open = scroll down · ✊ Fist = scroll up</div>
+  </div>
+  <div id="gesture-status">
+    <div>Gesture: <span class="state" id="g-state">—</span></div>
+    <div>Scroll: <span class="state" id="g-scroll">idle</span></div>
+  </div>
+  <button id="gesture-btn" onclick="toggleGesture()">
+    <span class="dot"></span>
+    Enable Hand Gesture Scroll
+  </button>
+</div>
+
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function animCursor() {
+  rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+
+// ── SCROLL PROGRESS ──
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.height = (window.scrollY / h * 100) + '%';
+});
+
+// ── NEURAL BACKGROUND ──
+const canvas = document.getElementById('neural-bg');
+const ctx = canvas.getContext('2d');
+let W, H, nodes = [];
+
+function resizeCanvas() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); initNodes(); });
+
+function initNodes() {
+  nodes = [];
+  const count = Math.floor((W * H) / 18000);
+  for (let i = 0; i < count; i++) {
+    nodes.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 2 + 1
+    });
+  }
+}
+initNodes();
+
+function drawNeural() {
+  ctx.clearRect(0, 0, W, H);
+  for (let n of nodes) {
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,229,204,0.5)';
+    ctx.fill();
+  }
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 130) {
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        const alpha = (1 - dist / 130) * 0.3;
+        ctx.strokeStyle = `rgba(0,229,204,${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawNeural);
+}
+drawNeural();
+
+// ── REVEAL ON SCROLL ──
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(r => revealObs.observe(r));
+
+// ── SKILL BARS ──
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.skill-bar').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.skill-group').forEach(g => barObs.observe(g));
+
+// ── HAND GESTURE SCROLL ──
+let gestureActive = false;
+let handsModel = null;
+let camera = null;
+let scrollVelocity = 0;
+let lastGesture = 'none';
+let gestureFrames = 0;
+
+const video = document.getElementById('cam-video');
+const camCanvas = document.getElementById('cam-canvas');
+const camCtx = camCanvas.getContext('2d');
+const camWrapper = document.getElementById('cam-wrapper');
+const gestureBtn = document.getElementById('gesture-btn');
+const gestureStatus = document.getElementById('gesture-status');
+const gState = document.getElementById('g-state');
+const gScroll = document.getElementById('g-scroll');
+
+function classifyHand(landmarks) {
+  if (!landmarks) return 'none';
+  // Finger tip indices: thumb=4, index=8, middle=12, ring=16, pinky=20
+  // MCP indices: index=5, middle=9, ring=13, pinky=17
+  const tips = [8, 12, 16, 20];
+  const mcps = [5, 9, 13, 17];
+  let extended = 0;
+  for (let i = 0; i < 4; i++) {
+    if (landmarks[tips[i]].y < landmarks[mcps[i]].y) extended++;
+  }
+  // Thumb
+  if (landmarks[4].x < landmarks[3].x) extended++;
+
+  if (extended >= 4) return 'open';     // open hand → scroll down
+  if (extended <= 1) return 'fist';     // fist → scroll up
+  if (extended === 2 && landmarks[8].y < landmarks[5].y && landmarks[12].y < landmarks[9].y) return 'peace'; // point/peace
+  return 'neutral';
+}
+
+function onResults(results) {
+  camCanvas.width = video.videoWidth || 200;
+  camCanvas.height = video.videoHeight || 150;
+  camCtx.save();
+  camCtx.clearRect(0, 0, camCanvas.width, camCanvas.height);
+
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    const lm = results.multiHandLandmarks[0];
+
+    // Draw skeleton
+    drawConnectors(camCtx, lm, HAND_CONNECTIONS, { color: 'rgba(0,229,204,0.6)', lineWidth: 1.5 });
+    drawLandmarks(camCtx, lm, { color: '#f5a623', lineWidth: 1, radius: 3 });
+
+    const gesture = classifyHand(lm);
+
+    if (gesture === lastGesture) {
+      gestureFrames++;
+    } else {
+      gestureFrames = 0;
+      lastGesture = gesture;
+    }
+
+    // Require 3 consistent frames
+    if (gestureFrames >= 3) {
+      if (gesture === 'open') {
+        scrollVelocity = 6;
+        gState.textContent = '✋ Open Hand';
+        gScroll.textContent = '↓ scrolling down';
+      } else if (gesture === 'fist') {
+        scrollVelocity = -6;
+        gState.textContent = '✊ Fist';
+        gScroll.textContent = '↑ scrolling up';
+      } else if (gesture === 'peace') {
+        scrollVelocity = 0;
+        gState.textContent = '✌️ Peace — Pause';
+        gScroll.textContent = 'paused';
+      } else {
+        scrollVelocity *= 0.7;
+        gState.textContent = gesture === 'neutral' ? '🤚 Neutral' : '—';
+        gScroll.textContent = 'idle';
+      }
+    }
+  } else {
+    scrollVelocity *= 0.85;
+    gState.textContent = 'No hand';
+    gScroll.textContent = 'idle';
+  }
+  camCtx.restore();
+}
+
+// Smooth scroll loop
+(function scrollLoop() {
+  if (gestureActive && Math.abs(scrollVelocity) > 0.3) {
+    window.scrollBy(0, scrollVelocity);
+    scrollVelocity *= 0.96;
+  }
+  requestAnimationFrame(scrollLoop);
+})();
+
+async function toggleGesture() {
+  if (!gestureActive) {
+    gestureBtn.textContent = ''; // clear
+    gestureBtn.innerHTML = '<span class="dot"></span> Starting...';
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, facingMode: 'user' } });
+      video.srcObject = stream;
+      await video.play();
+
+      const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+      hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.7, minTrackingConfidence: 0.6 });
+      hands.onResults(onResults);
+      handsModel = hands;
+
+      camera = new Camera(video, {
+        onFrame: async () => { if (handsModel) await handsModel.send({ image: video }); },
+        width: 320, height: 240
+      });
+      camera.start();
+
+      gestureActive = true;
+      gestureBtn.innerHTML = '<span class="dot"></span> Disable Hand Gesture Scroll';
+      gestureBtn.classList.add('active');
+      camWrapper.classList.add('visible');
+      gestureStatus.classList.add('visible');
+
+    } catch (err) {
+      gestureBtn.innerHTML = '<span class="dot"></span> Enable Hand Gesture Scroll';
+      alert('Camera access is required for hand gesture scroll. Please allow camera permission in your browser and try again.');
+      console.error(err);
+    }
+  } else {
+    if (camera) camera.stop();
+    if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+    gestureActive = false;
+    scrollVelocity = 0;
+    gestureBtn.innerHTML = '<span class="dot"></span> Enable Hand Gesture Scroll';
+    gestureBtn.classList.remove('active');
+    camWrapper.classList.remove('visible');
+    gestureStatus.classList.remove('visible');
+  }
+}
+
+// Smooth nav scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+</body>
+</html>
